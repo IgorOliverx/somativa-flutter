@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tetse/pre-home.dart';
 
 import 'home.dart';
 
@@ -13,8 +14,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: PreHome(),
     );
   }
 }
 
+  

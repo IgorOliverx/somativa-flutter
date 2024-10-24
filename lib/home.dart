@@ -11,20 +11,58 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final LocalAuthentication auth = LocalAuthentication();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TextButton(onPressed: () async {
-        final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-        if(canAuthenticateWithBiometrics){
-          final bool didAuthenticate = await auth.authenticate(
-              localizedReason: 'Verifique a biometria para dar o cuzinho',
-          options: const AuthenticationOptions(biometricOnly: false));
-          if(didAuthenticate){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (contextNew) => const Interna()));
-          }
-        }
-      }, child: const Text('Biometria')),
+      backgroundColor: Colors.red, // Cor de fundo igual à da imagem
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // O texto "CheckIt!" estilizado
+            const Text(
+              'CheckIt!',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 10), // Espaço entre o texto e o ícone
+            // O ícone de checklist estilizado
+            const Icon(
+              Icons.check_circle_outline, // Um ícone de checklist similar
+              size: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 20), // Espaço entre o ícone e o botão
+            ElevatedButton(
+              onPressed: () async {
+                final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+                if (canAuthenticateWithBiometrics) {
+                  final bool didAuthenticate = await auth.authenticate(
+                    localizedReason: 'Verifique a biometria para entrar no aplicativo',
+                    options: const AuthenticationOptions(biometricOnly: false),
+                  );
+                  if (didAuthenticate) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (contextNew) => const ConfirmPresenceScreen()),
+                    );
+                  }
+                }
+              },
+              child: const Text('Acessar o App'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
