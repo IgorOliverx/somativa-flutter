@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tetse/home.dart'; // Certifique-se de que a tela Home está importada corretamente
+import 'package:tetse/Screens/home.dart';
+import 'package:tetse/Screens/login.dart'; // Certifique-se de que a tela Home está importada corretamente
 
 class PreHome extends StatefulWidget {
   const PreHome({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class _PreHomeState extends State<PreHome> {
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => const Home(),
+            pageBuilder: (context, animation1, animation2) => const AuthScreen(),
             transitionsBuilder: (context, animation1, animation2, child) {
               return FadeTransition(
                 opacity: animation1,

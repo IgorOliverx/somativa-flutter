@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "667993774787",
+    "project_id": "checkin-60557",
+    "storage_bucket": "checkin-60557.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667993774787:android:c909541812b8aed7076076",
+        "android_client_info": {
+          "package_name": "com.example.tetse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA76EYM1BsLKuBq1x_hSPuh_Zm-8cQU4-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

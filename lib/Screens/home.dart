@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:tetse/interna.dart';
+import 'package:tetse/Screens/interna.dart';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});

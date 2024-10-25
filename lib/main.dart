@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tetse/pre-home.dart';
+import 'package:firebase_core/firebase_core.dart'; // Adicione esta linha
+import 'package:tetse/Screens/pre-home.dart';
+import 'Screens/home.dart';
 
-import 'home.dart';
-
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Garante que o Firebase seja inicializado corretamente
+  await Firebase.initializeApp();            // Inicializa o Firebase
   runApp(const MyApp());
 }
 
@@ -18,5 +20,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-  
