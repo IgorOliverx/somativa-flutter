@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
                   if (didAuthenticate) {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (contextNew) => const ConfirmPresenceScreen()),
+                      MaterialPageRoute(builder: (contextNew) =>  ConfirmPresenceScreen()),
                     );
                   }
                 }
