@@ -5,11 +5,18 @@ import 'package:latlong2/latlong.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:tetse/Screens/home.dart';
 
-class ConfirmPresenceScreen extends StatelessWidget {
+class ConfirmPresenceScreen extends StatefulWidget {
   ConfirmPresenceScreen({super.key});
-  final LocalAuthentication auth = LocalAuthentication();
 
-  // Coordenadas para a posição do prédio no senai
+  @override
+  _ConfirmPresenceScreenState createState() => _ConfirmPresenceScreenState();
+}
+
+class _ConfirmPresenceScreenState extends State<ConfirmPresenceScreen> {
+  final LocalAuthentication auth = LocalAuthentication();
+  bool _isPresentConfirmed = false; // Variável para controlar a confirmação
+
+  // Coordenadas para a posição do prédio no SENAI
   double get latitude => -22.5711;
   double get longitude => -47.4040;
 
@@ -40,7 +47,6 @@ class ConfirmPresenceScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 16),
-            // Título "Confirme sua presença"
             const Text(
               'Confirme sua presença',
               style: TextStyle(
@@ -50,7 +56,6 @@ class ConfirmPresenceScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Card "Tudo a seu dispor"
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -68,7 +73,6 @@ class ConfirmPresenceScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Ícones da parte inferior
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: const [
@@ -83,7 +87,6 @@ class ConfirmPresenceScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Seção de localização (com imagem do SENAI e o botão de "Check")
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(16),
@@ -94,14 +97,12 @@ class ConfirmPresenceScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Adiciona o FlutterMap
                     Expanded(
                       child: FlutterMap(
                         options: MapOptions(
-                          initialCenter: LatLng(latitude, longitude), // Centraliza o mapa
-                          initialZoom: 16.0, // Nível de zoom
+                          initialCenter: LatLng(latitude, longitude),
+                          initialZoom: 16.0,
                           onTap: (tapPosition, latLng) {
-                            // Ação ao tocar no mapa
                             print('Toque em: ${latLng.latitude}, ${latLng.longitude}');
                           },
                         ),
@@ -127,40 +128,58 @@ class ConfirmPresenceScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
 
-        ElevatedButton(
-          onPressed: () async {
-            final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-            if (canAuthenticateWithBiometrics) {
-              final bool didAuthenticate = await auth.authenticate(
-                localizedReason: 'Verifique a biometria para entrar no aplicativo',
-                options: const AuthenticationOptions(biometricOnly: false),
-              );
-              if (didAuthenticate) {
-                // Registro da presença no Firestore
-                await FirebaseFirestore.instance.collection('presenca').add({
-                  'presente': true, // Campo que indica presença
-                  'timestamp': FieldValue.serverTimestamp(), // Adiciona um timestamp
-                });
+                    // Botão "Check" visível apenas se a presença não foi confirmada
+                    if (!_isPresentConfirmed)
+                      ElevatedButton(
+                        onPressed: () async {
+                          final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+                          if (canAuthenticateWithBiometrics) {
+                            final bool didAuthenticate = await auth.authenticate(
+                              localizedReason: 'Verifique a biometria para entrar no aplicativo',
+                              options: const AuthenticationOptions(biometricOnly: false),
+                            );
+                            if (didAuthenticate) {
+                              // Registro da presença no Firestore
+                              await FirebaseFirestore.instance.collection('presenca').add({
+                                'presente': true,
+                                'timestamp': FieldValue.serverTimestamp(),
+                              });
 
-                // Navega para a próxima tela
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (contextNew) => const Home()),
-                );
-              }
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-          ),
-          child: const Text('Check', style: TextStyle(color: Colors.white),),
+                              // Atualizar o estado para indicar que a presença foi confirmada
+                              setState(() {
+                                _isPresentConfirmed = true;
+                              });
 
-
-        ),
+                              // Exibir um diálogo de confirmação
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Confirmação'),
+                                    content: const Text('Presença confirmada com sucesso!'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                        ),
+                        child: const Text('Check', style: TextStyle(color: Colors.white)),
+                      ),
                   ],
                 ),
               ),
