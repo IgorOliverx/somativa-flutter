@@ -16,15 +16,34 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String? _errorMessage;
+  String? _emailError;
+  String? _passwordError;
 
   final AuthService _authService = AuthService();
   final AccessService _accessLogService = AccessService();
 
-  // Função para autenticação via login no firebase
   Future<void> _authenticateAndLogin() async {
+    setState(() {
+      _emailError = null;
+      _passwordError = null;
+      _errorMessage = null;
+    });
+
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      setState(() {
+        if (_emailController.text.isEmpty) {
+          _emailError = 'Por favor, preencha o campo de email.';
+        }
+        if (_passwordController.text.isEmpty) {
+          _passwordError = 'Por favor, preencha o campo de senha.';
+        }
+      });
+      return;
+    }
+
     LocationChecker locationChecker = LocationChecker();
     bool isInRestrictedArea = await locationChecker.isWithInRestrictedArea();
-    print("Area restrita: $isInRestrictedArea");
+    print("Área restrita: $isInRestrictedArea");
     if (isInRestrictedArea) {
       try {
         User? isAuthenticated = await _authService.login(
@@ -32,7 +51,7 @@ class _AuthScreenState extends State<AuthScreen> {
           _passwordController.text,
         );
         if (isAuthenticated != null) {
-          await _accessLogService.registrarAcesso(true); // Acesso permitido
+          await _accessLogService.registrarAcesso(true);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => ConfirmPresenceScreen()),
@@ -40,8 +59,10 @@ class _AuthScreenState extends State<AuthScreen> {
         } else {
           setState(() {
             _errorMessage = 'Autenticação falhou.';
+            _emailError = 'Email ou senha incorretos.';
+            _passwordError = 'Email ou senha incorretos.';
           });
-          await _accessLogService.registrarAcesso(false); // Falha no Login
+          await _accessLogService.registrarAcesso(false);
         }
       } catch (e) {
         setState(() {
@@ -52,16 +73,14 @@ class _AuthScreenState extends State<AuthScreen> {
       setState(() {
         _errorMessage = 'Você não está na área restrita.';
       });
-      await _accessLogService.registrarAcesso(false); // Acesso negado pela localização
+      await _accessLogService.registrarAcesso(false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
-      backgroundColor: Colors.red, // Cor de fundo azul escuro
+      backgroundColor: Colors.red,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -70,16 +89,20 @@ class _AuthScreenState extends State<AuthScreen> {
             // Campo de texto para o usuário
             TextField(
               controller: _emailController,
-              style: const TextStyle(color: Colors.white), // Texto branco
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: const Color(0xFF1C3A57), // Fundo azul escuro
+                fillColor: Colors.transparent,
                 labelText: 'Email',
-                labelStyle: const TextStyle(color: Colors.white), // Texto do label em branco
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide.none, // Remove a borda
+                labelStyle: const TextStyle(color: Colors.white),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.white, width: 1.5),
                 ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.white, width: 2.0),
+                ),
+                errorText: _emailError,
+                errorStyle: const TextStyle(color: Colors.yellow), // Cor da mensagem de erro
               ),
             ),
             const SizedBox(height: 16),
@@ -88,26 +111,30 @@ class _AuthScreenState extends State<AuthScreen> {
             TextField(
               controller: _passwordController,
               obscureText: true,
-              style: const TextStyle(color: Colors.white), // Texto branco
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: const Color(0xFF1C3A57), // Fundo azul escuro
-                labelText: 'Senha do Usuario',
-                labelStyle: const TextStyle(color: Colors.white), // Texto do label em branco
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide.none, // Remove a borda
+                fillColor: Colors.transparent,
+                labelText: 'Senha',
+                labelStyle: const TextStyle(color: Colors.white),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.white, width: 1.5),
                 ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.white, width: 2.0),
+                ),
+                errorText: _passwordError,
+                errorStyle: const TextStyle(color: Colors.yellow), // Cor da mensagem de erro
               ),
             ),
-            const SizedBox(height: 40), // Espaço antes do botão de login
+            const SizedBox(height: 40),
 
             // Botão de login
             ElevatedButton(
               onPressed: _authenticateAndLogin,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                backgroundColor: Colors.blue, // Cor do botão
+                backgroundColor: Colors.blue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -123,7 +150,7 @@ class _AuthScreenState extends State<AuthScreen> {
             if (_errorMessage != null) ...[
               Text(
                 _errorMessage!,
-                style: const TextStyle(color: Colors.red),
+                style: const TextStyle(color: Colors.yellow), // Cor da mensagem de erro
               ),
               const SizedBox(height: 10),
             ],

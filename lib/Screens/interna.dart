@@ -9,7 +9,7 @@ class ConfirmPresenceScreen extends StatelessWidget {
   ConfirmPresenceScreen({super.key});
   final LocalAuthentication auth = LocalAuthentication();
 
-  // Coordenadas para o mapa
+  // Coordenadas para a posição do prédio no senai
   double get latitude => -22.5711;
   double get longitude => -47.4040;
 
@@ -157,7 +157,9 @@ class ConfirmPresenceScreen extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
           ),
-          child: const Text('Check'),
+          child: const Text('Check', style: TextStyle(color: Colors.white),),
+
+
         ),
                   ],
                 ),
