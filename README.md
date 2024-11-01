@@ -21,7 +21,10 @@ Para obter a localização e autenticação biométrica, utilizamos as bibliotec
 <h3>2.2 Integração com Firebase </h3>
 O Firebase é usado para armazenar dados críticos de autenticação e logs. Com ele, o aplicativo armazena os registros de acesso de forma segura, mantendo a escalabilidade. A autenticação do Firebase também facilita o login, pois permite métodos adicionais como autenticação por Google, e-mail, etc.
 
-<h3>2.3 API Personalizada </h3>
+<h3>2.3 Mapa visual </h3>
+A API flutter_map é usada para exibir visualmente o mapa. Com ela, o aplicativo fornece uma representação gráfica da localização do usuário e das áreas restritas. Isso garante que os usuários possam ver facilmente sua posição atual em relação às zonas permitidas. A API flutter_map também suporta vários provedores de mapas e opções de personalização, tornando-a flexível e escalável para diferentes casos de uso. Essa integração melhora a experiência do usuário ao fornecer uma interface de mapa clara e interativa.
+
+<h3>2.4 API Personalizada </h3>
 A API JSON personalizada foi implementada para manipular dados de usuários e logs de acesso de forma centralizada. A comunicação ocorre por meio de requisições HTTP, onde o Firebase faz a intermediação da autenticação, e os dados do usuário e logs são manipulados no banco de dados seguro (MongoDB ou PostgreSQL, dependendo da configuração escolhida).
 
 
