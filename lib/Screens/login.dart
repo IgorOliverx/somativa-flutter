@@ -134,14 +134,14 @@ class _AuthScreenState extends State<AuthScreen> {
               onPressed: _authenticateAndLogin,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
               child: const Text(
                 'Fazer Login',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(color: Colors.redAccent, fontSize: 16),
               ),
             ),
 
